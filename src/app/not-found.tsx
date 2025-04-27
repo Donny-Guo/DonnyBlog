@@ -26,7 +26,7 @@ function Custom404() {
 
   return (
     <main className="mx-8 mt-[30vh] flex flex-col items-center justify-center text-center">
-      <h1 className="mb-4 text-3xl font-bold text-primary-300">
+      {/* <h1 className="mb-4 text-3xl font-bold text-primary-300">
         404 - 页面迷路啦 (；′⌒`)
       </h1>
       <p className="mb-6 text-base leading-7">
@@ -41,6 +41,25 @@ function Custom404() {
         className="rounded-sm bg-secondary-300 px-4 py-2 text-white no-underline transition-all-500 hover:scale-110 bg-hover-secondary hover:text-black"
       >
         返回首页
+      </Link> */}
+      <h1 className="mb-4 text-3xl font-bold text-primary-300">
+        404 - Page is lost (；′⌒`)
+      </h1>
+      <p className="mb-6 text-base leading-7">
+        Sorry, the page you're looking for has disappeared, or it never existed 🔍
+        <br />
+        Automatically returning to homepage in
+        {' '}
+        {' '}
+        <span className="text-secondary-300">{countdown}</span>
+        {' '}
+        s.
+      </p>
+      <Link
+        href="/"
+        className="rounded-sm bg-secondary-300 px-4 py-2 text-white no-underline transition-all-500 hover:scale-110 bg-hover-secondary hover:text-black"
+      >
+        Return to homepage
       </Link>
     </main>
   )

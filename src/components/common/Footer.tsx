@@ -1,7 +1,6 @@
 'use client'
 
 import SocialMediaLink from '@/components/common/SocialMediaLinks'
-import Link from 'next/link'
 
 import { usePathname } from 'next/navigation'
 
@@ -25,10 +24,13 @@ const Footer = ({ config }: FooterProps) => {
     <footer className="mb-1 mt-10 w-full">
       <div className="mx-auto max-w-7xl px-4 py-4 text-center">
         {!isHomePage && <SocialMediaLink socialMedia={config.socialMedia} />}
-        <p className="text-gray-dark">
+        {/* <p className="text-gray-dark">
           {`© ${getYearDisplay(config.startYear, currentYear)}${currentYear} ${config.title}`}
+        </p> */}
+        <p className="text-gray-dark">
+          {`© ${getYearDisplay(config.startYear, currentYear)}${currentYear} Dongping Guo`}
         </p>
-        <p className="text-base text-gray-dark">
+        {/* <p className="text-base text-gray-dark">
           Theme
           {' '}
           <Link
@@ -52,7 +54,7 @@ const Footer = ({ config }: FooterProps) => {
           >
             ZL Asica
           </Link>
-        </p>
+        </p> */}
         {config.slotFooter && (
           <div dangerouslySetInnerHTML={{ __html: config.slotFooter }} />
         )}

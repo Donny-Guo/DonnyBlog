@@ -67,7 +67,8 @@ export default function RootLayout(
     <html lang={config.lang}>
       {/* icons */}
       <link rel="icon" type="image/png" href="/icons/favicon-96x96.png" sizes="96x96" />
-      <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg" />
+      {/* <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg" /> */}
+      <link rel="icon" type="image/png" href="/icons/favicon.png" />
       <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
 
       {/* If rss set in config */}
@@ -83,7 +84,7 @@ export default function RootLayout(
           />
         )}
       {/* Custom js */}
-      {config.headerJavascript.map(jsFile => (
+      {config.headerJavascript?.map(jsFile => (
         <Script key={jsFile} src={jsFile} strategy="afterInteractive" />
       ))}
       {/* Google Analytics Script */}

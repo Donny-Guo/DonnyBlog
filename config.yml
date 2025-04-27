@@ -88,8 +88,8 @@ disqusShortname:
 # ! WARNING: Only modify these if you understand the purpose of custom scripts.
 # ######################
 # Add custom JavaScript code to be included inside the <head> section of your site. One script per line.
-headerJavascript:
-  - https://cdn.jsdelivr.net/gh/zl-asica/web-cdn/js/zlasica.js
+headerJavascript: []
+# - https://cdn.jsdelivr.net/gh/zl-asica/web-cdn/js/zlasica.js
 # Add custom HTML code to be included inside the <footer> section of your site.
 slotFooter: |
   <!-- Add your custom footer HTML here -->
