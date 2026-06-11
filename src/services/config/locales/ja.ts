@@ -33,18 +33,23 @@ const ja: Translation = {
     description: 'の动画ページです。データはAnilistから取得しています。',
     source: 'データソース: ',
     status: {
-      watching: '視聴中',
+      current: '視聴中',
+      repeating: '見なおし',
       completed: '完了',
-      paused: '一時停止',
       dropped: '中止',
+      paused: '一時停止',
       planning: '計画',
     },
   },
   post: {
     thumbnail: 'サムネイル: ',
     readMore: '続きを読む ',
-    copy: 'コピーする',
-    copied: 'コピーしました！',
+    copy: {
+      copy: 'コピー',
+      copied: 'コピーしました！',
+      copyAriaLabel: 'コードをクリップボードにコピー',
+      copyFailed: 'コピーに失敗しました',
+    },
     categories: 'カテゴリ: ',
     noCategories: 'カテゴリなし',
     tags: 'タグ: ',
@@ -63,7 +68,11 @@ const ja: Translation = {
   },
   aria: {
     travellings: '開通の道',
-    theme: 'テーマ',
+    skipToContent: 'コンテンツにスキップ',
+    theme: {
+      light: 'ライトテーマに切り替え',
+      dark: 'ダークテーマに切り替え',
+    },
     pagination: {
       label: 'ページネーションナビゲーション',
       prev: '前のページ',

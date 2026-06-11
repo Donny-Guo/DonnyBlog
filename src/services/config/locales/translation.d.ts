@@ -31,25 +31,31 @@ interface Translation {
     title: string
     description: string
     source: string
+    // const SORT_ORDER = ['CURRENT', 'REPEATING', 'COMPLETED', 'DROPPED', 'PAUSED', 'PLANNING']
     status: {
-      watching: string
+      current: string
+      repeating: string
       completed: string
-      paused: string
       dropped: string
+      paused: string
       planning: string
     }
   }
   post: {
     thumbnail: string
     readMore: string
-    copy: string
-    copied: string
     categories: string
     noCategories: string
     tags: string
     noTags: string
     toc: string
     tocToggle: string
+    copy: {
+      copy: string
+      copied: string
+      copyAriaLabel: string
+      copyFailed: string
+    }
     copyright: {
       author: string
       title: string
@@ -62,7 +68,11 @@ interface Translation {
   }
   aria: {
     travellings: string
-    theme: string
+    skipToContent: string
+    theme: {
+      light: string
+      dark: string
+    }
     pagination: {
       label: string
       prev: string

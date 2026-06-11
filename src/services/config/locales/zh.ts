@@ -32,18 +32,23 @@ const zh: Translation = {
     description: ' 的动漫列表页面，数据来自 Anilist。',
     source: '数据来源：',
     status: {
-      watching: '在看',
+      current: '在看',
+      repeating: '重看',
       completed: '已看完',
-      paused: '暂停',
       dropped: '弃坑',
+      paused: '暂停',
       planning: '计划',
     },
   },
   post: {
     thumbnail: '封面：',
     readMore: '阅读全文 ',
-    copy: '点击复制',
-    copied: '已复制',
+    copy: {
+      copy: '复制',
+      copied: '已复制！',
+      copyAriaLabel: '将代码复制到剪贴板',
+      copyFailed: '复制失败',
+    },
     categories: '分类：',
     noCategories: '无分类',
     tags: '标签：',
@@ -62,7 +67,11 @@ const zh: Translation = {
   },
   aria: {
     travellings: '开往',
-    theme: '主题',
+    skipToContent: '跳过导航，直接进入内容',
+    theme: {
+      light: '切换到浅色主题',
+      dark: '切换到深色主题',
+    },
     pagination: {
       label: '分页导航',
       prev: '上一页',

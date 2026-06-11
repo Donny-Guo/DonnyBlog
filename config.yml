@@ -4,15 +4,15 @@
 title: DonnyBlog # The name of your blog, used in titles and meta tags.
 subTitle: Donny's personal blog # A short description that appears after the main title.
 description: DonnyBlog is a place for my personal thoughts and sharing. # A longer description for SEO and meta tags.
-keywords: 'DonnyBlog, Next.js, markdown blog, Tailwind CSS, blog template, Donny-Guo' # Comma-separated keywords for SEO purposes.
+keywords: "DonnyBlog, Next.js, markdown blog, Tailwind CSS, blog template, Donny-Guo" # Comma-separated keywords for SEO purposes.
 author:
   name: Donny-Guo # Your name, displayed as the author of the blog.
-  link: 'https://www.dongpingguo.cc' # Link to your personal website or blog.
+  link: "https://www.dongpingguo.cc" # Link to your personal website or blog.
 # Language setting: Use ISO 639-1 code (e.g., 'en' for English, 'zh' for Chinese)
 lang: en
 # Your public root url, used for SEO and meta tags.
 # !Do not include a ending slash
-siteUrl: 'https://www.dongpingguo.cc'
+siteUrl: "https://www.dongpingguo.cc"
 
 # Path to your avatar image. Can be a relative path from /public or a full URL (e.g., https://).
 avatar: /images/avatar.png
@@ -22,6 +22,30 @@ background: /images/background.jpg
 slogan: You never fail unless you stop trying.
 # Google Analytics tracking ID (e.g., 'G-XXXXXXXXXX'). Leave empty if you do not want to use Google Analytics.
 googleAnalytics:
+
+# ######################
+# HTML HEAD SETTINGS
+# ######################
+# Feel free to add more links in Head for your site for better SEO.
+# You could generate the links/icons by using https://realfavicongenerator.net/
+# Recommend put your icons in /public/icons folder. And follow the examples below.
+# Each item here will be rendered as a link tag in the <head> section of your site.
+# <link rel="icon" type="image/png" href="/icons/favicon-96x96.png" sizes="96x96" />
+# - rel
+#   type(optional)
+#   href
+#   sizes(optional)
+links:
+  - rel: icon
+    type: image/png
+    href: /icons/favicon-96x96.png
+    sizes: 96x96
+  - rel: icon
+    type: image/svg+xml
+    href: /icons/favicon.svg
+  - rel: apple-touch-icon
+    href: /icons/apple-touch-icon.png
+    sizes: 180x180
 
 # ######################
 # POSTS SETTINGS

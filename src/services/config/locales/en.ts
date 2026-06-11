@@ -33,18 +33,23 @@ const en: Translation = {
     description: '\'s anime list page, data from Anilist.',
     source: 'Data Source: ',
     status: {
-      watching: 'Watching',
+      current: 'Watching',
+      repeating: 'Repeating',
       completed: 'Completed',
-      paused: 'Paused',
       dropped: 'Dropped',
+      paused: 'Paused',
       planning: 'Planning',
     },
   },
   post: {
     thumbnail: 'Thumbnail: ',
     readMore: 'Read more about ',
-    copy: 'Copy',
-    copied: 'Copied!',
+    copy: {
+      copy: 'Copy',
+      copied: 'Copied!',
+      copyAriaLabel: 'Copy code to clipboard',
+      copyFailed: 'Copy Failed',
+    },
     categories: 'Categories: ',
     noCategories: 'No Categories',
     tags: 'Tags: ',
@@ -63,7 +68,11 @@ const en: Translation = {
   },
   aria: {
     travellings: 'travellings',
-    theme: 'Theme',
+    skipToContent: 'Skip to content',
+    theme: {
+      light: 'Switch to light theme',
+      dark: 'Switch to dark theme',
+    },
     pagination: {
       label: 'Pagination Navigation',
       prev: 'Prev',
