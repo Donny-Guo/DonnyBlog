@@ -1,4 +1,4 @@
-import Script from "next/script";
+import Script from 'next/script'
 
 const MARKDOWN_ARTICLE_INTERACTIONS_SCRIPT = String.raw`
 (() => {
@@ -128,7 +128,7 @@ const MARKDOWN_ARTICLE_INTERACTIONS_SCRIPT = String.raw`
   document.addEventListener('click', handleClick, true);
   window.addEventListener('keydown', handleKeyDown);
 })();
-`;
+`
 
 /**
  * Runtime image-preview delegation for Markdown rendered as static article DOM.
@@ -138,5 +138,5 @@ export function MarkdownArticleInteractions() {
     <Script id="markdown-article-interactions" strategy="afterInteractive">
       {MARKDOWN_ARTICLE_INTERACTIONS_SCRIPT}
     </Script>
-  );
+  )
 }

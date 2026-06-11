@@ -4,15 +4,15 @@
 title: DonnyBlog # The name of your blog, used in titles and meta tags.
 subTitle: Donny's personal blog # A short description that appears after the main title.
 description: DonnyBlog is a place for my personal thoughts and sharing. # A longer description for SEO and meta tags.
-keywords: "DonnyBlog, Next.js, markdown blog, Tailwind CSS, blog template, Donny-Guo" # Comma-separated keywords for SEO purposes.
+keywords: 'DonnyBlog, Next.js, markdown blog, Tailwind CSS, blog template, Donny-Guo' # Comma-separated keywords for SEO purposes.
 author:
   name: Donny-Guo # Your name, displayed as the author of the blog.
-  link: "https://www.dongpingguo.cc" # Link to your personal website or blog.
+  link: 'https://www.dongpingguo.cc' # Link to your personal website or blog.
 # Language setting: Use ISO 639-1 code (e.g., 'en' for English, 'zh' for Chinese)
 lang: en
 # Your public root url, used for SEO and meta tags.
 # !Do not include a ending slash
-siteUrl: "https://www.dongpingguo.cc"
+siteUrl: 'https://www.dongpingguo.cc'
 
 # Path to your avatar image. Can be a relative path from /public or a full URL (e.g., https://).
 avatar: /images/avatar.png
