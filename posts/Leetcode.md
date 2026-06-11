@@ -1,14 +1,14 @@
 ---
-title: 'My first blog'
-date: '2025-04-24 20:23:00'
-thumbnail: '/images/leetcode.jpg'
+title: "My first blog"
+date: "2025-04-24 20:23:00"
 categories:
   - Leetcode
 tags:
   - Leetcode
+thumbnail: "/images/leetcode.jpg"
 ---
 
-https://leetcode.com/problems/car-fleet/description/
+<https://leetcode.com/problems/car-fleet/description/>
 
 There are `n` cars at given miles away from the starting mile 0, traveling to reach the mile `target`.
 
@@ -70,7 +70,7 @@ There is only one car, hence there is only one fleet.
 
 ---
 
-## Solution:
+## Solution
 
 ```python
 class Solution:
