@@ -1,8 +1,8 @@
 {
   "name": "suzu-blog",
-  "version": "1.9.0",
+  "version": "1.13.1",
   "private": true,
-  "packageManager": "pnpm@10.8.1",
+  "packageManager": "pnpm@11.5.2+sha512.71c631e382066efc25625d5cf029075de07b61b37f6e27350fbd84b1bda5864c8c1967adc280776b45c30a715c0359a3be08fef42d5bb09e2b99029979692916",
   "author": {
     "name": "ZL Asica",
     "email": "zl@zla.app",
@@ -16,89 +16,76 @@
   },
   "bugs": "https://github.com/ZL-Asica/SuzuBlog/issues",
   "scripts": {
-    "changeset": "changeset",
-    "version": "changeset version",
-    "dev": "next dev --turbopack",
+    "dev": "next dev",
     "build": "pnpm run lint:fix && next build",
     "start": "next start",
-    "lint": "next lint",
-    "lint:fix": "next lint --fix",
-    "format": "prettier --write **/*.{css,scss,less,styl,html,md}",
-    "prepare": "husky"
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "lint:ci": "eslint . --max-warnings=0",
+    "prepare": "husky || true"
   },
   "dependencies": {
-    "@vercel/analytics": "^1.5.0",
-    "@vercel/speed-insights": "^1.2.0",
-    "@zl-asica/react": "^0.5.0",
+    "@vercel/analytics": "^2.0.1",
+    "@vercel/speed-insights": "^2.0.0",
+    "@zl-asica/react": "^0.13.0",
     "clsx": "^2.1.1",
-    "es-toolkit": "^1.35.0",
     "gray-matter": "^4.0.3",
-    "katex": "^0.16.22",
-    "lucide-react": "^0.501.0",
-    "minisearch": "^7.1.2",
-    "next": "15.3.1",
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
-    "react-icons": "^5.5.0",
+    "katex": "^0.17.0",
+    "lucide-react": "^1.17.0",
+    "minisearch": "^7.2.0",
+    "next": "16.2.7",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
+    "react-icons": "^5.6.0",
     "react-markdown": "^10.1.0",
-    "react-syntax-highlighter": "^15.6.1",
     "rehype-katex": "^7.0.1",
     "rehype-raw": "^7.0.0",
     "remark-gemoji": "^8.0.0",
     "remark-gfm": "^4.0.1",
     "remark-math": "^6.0.0",
-    "twikoo": "^1.6.42",
-    "yaml": "^2.7.1",
-    "zod": "^3.24.3"
+    "schema-dts": "^2.0.0",
+    "sonner": "^2.0.7",
+    "twikoo": "^1.7.11",
+    "unist-util-visit": "^5.1.0",
+    "yaml": "^2.9.0",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^4.12.0",
-    "@changesets/cli": "^2.29.2",
-    "@eslint-react/eslint-plugin": "^1.48.4",
-    "@next/eslint-plugin-next": "^15.3.1",
-    "@tailwindcss/postcss": "^4.1.4",
-    "@types/node": "^22.14.1",
-    "@types/react": "^19.1.2",
-    "@types/react-dom": "^19.1.2",
+    "@antfu/eslint-config": "^9.0.0",
+    "@eslint-react/eslint-plugin": "^5.8.12",
+    "@next/eslint-plugin-next": "16.2.7",
+    "@shikijs/transformers": "^4.2.0",
+    "@tailwindcss/postcss": "^4.3.0",
+    "@types/mdast": "^4.0.4",
+    "@types/node": "^24.12.2",
+    "@types/react": "19.2.17",
+    "@types/react-dom": "19.2.3",
     "@types/rss": "^0.0.32",
-    "eslint": "^9.25.0",
-    "eslint-plugin-format": "^1.0.1",
-    "eslint-plugin-react-hooks": "^5.2.0",
-    "eslint-plugin-react-refresh": "^0.4.19",
-    "eslint-plugin-tailwindcss": "^3.18.0",
+    "bumpp": "^11.1.0",
+    "eslint": "^10.4.1",
+    "eslint-plugin-format": "^2.0.1",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.2",
     "husky": "^9.1.7",
-    "lint-staged": "^15.5.1",
-    "postcss": "^8.5.3",
+    "nano-staged": "^1.0.2",
+    "postcss": "^8.5.15",
     "postcss-flexbugs-fixes": "^5.0.2",
-    "postcss-preset-env": "^10.1.6",
-    "prettier": "^3.5.3",
+    "postcss-preset-env": "^11.3.0",
     "rss": "^1.2.2",
-    "tailwindcss": "^4.1.4",
-    "typescript": "^5.8.3"
-  },
-  "lint-staged": {
-    "**/*.{js,jsx,ts,tsx,json,yml}": [
-      "eslint --fix"
-    ],
-    "**/*.{css,scss,less,styl,html,md}": [
-      "prettier --write"
-    ]
-  },
-  "prettier": {
-    "semi": false,
-    "singleQuote": true
+    "shiki": "^4.2.0",
+    "tailwindcss": "^4.3.0",
+    "typescript": "6.0.3"
   },
   "browserslist": {
-    "production": [
-      ">0.2%",
-      "last 2 versions",
-      "not dead",
-      "no op_mini all"
-    ],
     "development": [
       "last 1 chrome version",
       "last 1 firefox version",
       "last 1 safari version"
+    ]
+  },
+  "nano-staged": {
+    "**/*.{js,jsx,ts,tsx,json,yml,css,scss,less,styl,html,md,mdx}": [
+      "eslint --fix"
     ]
   }
 }

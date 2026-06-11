@@ -92,13 +92,11 @@
 
   @keyframes mask-reveal {
     0% {
-      mask: linear-gradient(90deg, #000 25%, #000000e6 50%, #00000000) 150% 0 /
-        400% no-repeat;
+      mask: linear-gradient(90deg, #000 25%, #000000e6 50%, #00000000) 150% 0 / 400% no-repeat;
       opacity: 0.2;
     }
     100% {
-      mask: linear-gradient(90deg, #000 25%, #000000e6 50%, #00000000) 0 / 400%
-        no-repeat;
+      mask: linear-gradient(90deg, #000 25%, #000000e6 50%, #00000000) 0 / 400% no-repeat;
       opacity: 1;
     }
   }
@@ -132,31 +130,6 @@ html,
 body {
   background-color: var(--color-background);
   color: var(--color-foreground);
-}
-
-/****************************************************
- * ACCESSIBILITY
- ****************************************************/
-
-/* Remove default focus outline */
-*:focus {
-  outline: none;
-}
-
-/* Add focus outline for keyboard users */
-*:focus-visible {
-  outline: 2px solid var(--colors-accent-500);
-  outline-offset: 4px;
-}
-
-/* Enhance focus for form inputs */
-h2:focus-visible,
-input:focus-visible,
-select:focus-visible,
-textarea:focus-visible,
-button:focus-visible {
-  outline: 2px solid var(--colors-secondary-500);
-  outline-offset: 2px;
 }
 
 /* Color Utils */

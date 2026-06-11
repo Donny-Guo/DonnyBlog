@@ -1,12 +1,30 @@
+import type { FriendLink } from '@/schemas'
 import { CustomImage } from '@/components/ui'
-import { replace } from 'es-toolkit/compat'
+import { friendLinkSchema } from '@/schemas'
 
-const renderFriendLinks = (linksChildren: string, transition: Translation) => {
-  let links: FriendLink[] = []
+interface FriendLinksProps {
+  linksChildren: string
+  translation: Translation
+}
+
+const FriendLinks = ({
+  linksChildren,
+  translation,
+}: FriendLinksProps) => {
+  const links: FriendLink[] = []
   try {
-    links = JSON.parse(replace(linksChildren, /\}\s*,\s*\{/g, '},{')) as FriendLink[]
-    if (!Array.isArray(links)) {
+    const rawJson = JSON.parse(linksChildren.replace(/\}\s*,\s*\{/g, '},{')) as FriendLink[]
+    if (!Array.isArray(rawJson)) {
       throw new TypeError('Parsed links is not an array')
+    }
+    for (const item of rawJson) {
+      const parsed = friendLinkSchema.safeParse(item)
+      if (parsed.success) {
+        links.push(parsed.data)
+      }
+      else {
+        console.error('[SuzuBlog-friends] Failed to parse Friend Links JSON:', parsed.error)
+      }
     }
   }
   catch (error) {
@@ -37,7 +55,7 @@ const renderFriendLinks = (linksChildren: string, transition: Translation) => {
                 src={link.img}
                 width={100}
                 height={100}
-                alt={`${transition.friends.avatar}: ${link.title ?? ''}`}
+                alt={`${translation.friends.avatar}: ${link.title ?? ''}`}
                 className="h-[100px] w-[100px] rounded-full object-cover object-center"
                 priority={false}
               />
@@ -58,4 +76,4 @@ const renderFriendLinks = (linksChildren: string, transition: Translation) => {
   )
 }
 
-export default renderFriendLinks
+export default FriendLinks

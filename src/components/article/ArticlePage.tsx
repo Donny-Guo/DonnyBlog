@@ -1,8 +1,9 @@
-import { CustomImage } from '@/components/ui'
-import { includes, isEmpty, lowerCase } from 'es-toolkit/compat'
+import type { Config } from '@/schemas'
 import dynamic from 'next/dynamic'
+import { CustomImage } from '@/components/ui'
 import CategoriesTagsList from './CategoriesTagsList'
 import MarkdownContent from './parser'
+import { MarkdownArticleInteractions } from './parser/MarkdownArticleInteractions'
 import TOC from './TOC'
 
 const CopyrightInfo = dynamic(async () => import('./CopyrightInfo'))
@@ -70,7 +71,7 @@ const ArticlePage = ({ config, post }: ArticlePageProps) => {
         : (
             <div className="mx-auto mb-5 w-full max-w-3xl">
               <h1 className="text-3xl font-bold">{post.frontmatter.title}</h1>
-              {includes(['about', 'friends'], lowerCase(post.slug)) || (
+              {post.slug.toLowerCase() !== 'about' && post.slug.toLowerCase() !== 'friends' && (
                 <MetaInfo
                   author={post.frontmatter.author}
                   date={post.frontmatter.date}
@@ -95,7 +96,7 @@ const ArticlePage = ({ config, post }: ArticlePageProps) => {
             />
           </ul>
         )}
-        {!isEmpty(post.toc) && (
+        {Array.isArray(post.toc) && post.toc.length > 0 && (
           <TOC
             items={post.toc}
             translation={translation}
@@ -106,6 +107,7 @@ const ArticlePage = ({ config, post }: ArticlePageProps) => {
 
         {/* Main Content */}
         <MarkdownContent post={post} translation={translation} />
+        <MarkdownArticleInteractions />
 
         {post.frontmatter.showLicense && (
           <CopyrightInfo
@@ -118,11 +120,11 @@ const ArticlePage = ({ config, post }: ArticlePageProps) => {
         )}
         <div className="mt-10" />
         {post.frontmatter.showComments && (
-          config.twikooEnvId != null && config.twikooEnvId.trim() !== ''
+          config.twikooEnvId !== null && config.twikooEnvId.length > 0
             ? (
                 <TwikooComments environmentId={config.twikooEnvId} />
               )
-            : config.disqusShortname != null && config.disqusShortname.trim() !== ''
+            : config.disqusShortname !== null && config.disqusShortname.length > 0
               ? (
                   <DisqusComments disqusShortname={config.disqusShortname} />
                 )

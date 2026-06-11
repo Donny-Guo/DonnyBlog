@@ -1,11 +1,44 @@
-import type { ReactNode } from 'react'
+import type { ComponentPropsWithoutRef, ReactNode } from 'react'
 import type { Components as MarkdownComponents } from 'react-markdown'
-import { CustomImage, SakuraIcon } from '@/components/ui'
-import { generateHierarchicalSlug, slugPrefix } from '@/services/utils'
+import dynamic from 'next/dynamic'
 import { isValidElement } from 'react'
+import { SakuraIcon } from '@/components/ui'
+import { generateHierarchicalSlug, slugPrefix } from '@/services/utils'
 import { KEY_ICONS } from './keyboardIcons'
-import CodeBlock from './renderCodeBlock'
-import renderFriendLinks from './renderFriendLinks'
+import { MarkdownAdmonition } from './MarkdownAdmonition'
+import { MarkdownDetails, MarkdownSummary } from './MarkdownDetails'
+import { MarkdownGallery } from './MarkdownGallery'
+import { MarkdownImage } from './MarkdownImage'
+import {
+  MarkdownAbbreviation,
+  MarkdownFootnoteBackReference,
+  MarkdownFootnoteReference,
+} from './MarkdownTooltip'
+import { SpoilerText } from './remarkExtendedMarkdown/components'
+
+const CodeBlock = dynamic(async () => import('./codeBlock/renderCodeBlock'))
+const FriendLinks = dynamic(async () => import('./FriendLinks'))
+
+type MarkdownAnchorProps = ComponentPropsWithoutRef<'a'> & {
+  'data-footnote-backref'?: boolean | string
+  'data-footnote-preview'?: string
+  'data-footnote-ref'?: boolean | string
+  'node'?: unknown
+}
+
+type MarkdownSectionProps = ComponentPropsWithoutRef<'section'> & {
+  'data-footnotes'?: boolean | string
+  'node'?: unknown
+}
+
+type MarkdownDivProps = ComponentPropsWithoutRef<'div'> & {
+  'data-gallery-mode'?: 'grid'
+  'node'?: unknown
+}
+
+const hasToken = (value: string | undefined, token: string): boolean => {
+  return value?.split(/\s+/).includes(token) === true
+}
 
 const createMarkdownComponents = (translation: Translation, autoSlug: boolean = true): MarkdownComponents => {
   // Set initial heading levels
@@ -21,7 +54,15 @@ const createMarkdownComponents = (translation: Translation, autoSlug: boolean = 
 
   return {
     // Heading related
-    h2: ({ children }) => {
+    h2: ({ children, className, id }) => {
+      if (hasToken(className, 'sr-only')) {
+        return (
+          <h2 id={id} className="sr-only">
+            {children}
+          </h2>
+        )
+      }
+
       const slug = generateHierarchicalSlug('h2', headingLevels)
       return (
         <h2
@@ -117,8 +158,24 @@ const createMarkdownComponents = (translation: Translation, autoSlug: boolean = 
         {children}
       </del>
     ),
-    sup: ({ children }) => <sup className="text-xs align-super">{children}</sup>,
-    sub: ({ children }) => <sub className="text-xs align-sub">{children}</sub>,
+    mark: ({ children, className = '' }) => (
+      <mark className={`rounded bg-yellow-200 px-1 py-0.5 ${className}`}>
+        {children}
+      </mark>
+    ),
+
+    sup: ({ children, className = '' }) => (
+      <sup className={`text-xs align-super ${className}`}>
+        {children}
+      </sup>
+    ),
+
+    sub: ({ children, className = '' }) => (
+      <sub className={`text-xs align-sub ${className}`}>
+        {children}
+      </sub>
+    ),
+    abbr: MarkdownAbbreviation,
     blockquote: ({ children }) => (
       <div className="my-3 flex justify-center">
         <blockquote className="w-[95%] rounded-md border-l-4 border-primary-300 dark:border-primary-200 bg-gray-light bg-opacity-75 py-0.5 pl-3 pr-2 italic shadow-sm transition-shadow duration-300 hover:shadow-md">
@@ -126,21 +183,33 @@ const createMarkdownComponents = (translation: Translation, autoSlug: boolean = 
         </blockquote>
       </div>
     ),
-    details: ({ children }) => (
-      <details className="cursor-pointer rounded-lg border border-gray-300 bg-background p-3 open:bg-background">
-        {children}
-      </details>
-    ),
-    summary: ({ children }) => (
-      <summary className="font-semibold text-primary cursor-pointer">
-        {children}
-      </summary>
-    ),
-    mark: ({ children }) => (
-      <mark className="bg-yellow-200 px-1 py-0.5 rounded">
-        {children}
-      </mark>
-    ),
+    aside: MarkdownAdmonition,
+    div: ({
+      children,
+      className,
+      node: _node,
+      ...props
+    }: MarkdownDivProps) => {
+      if (props['data-gallery-mode'] != null) {
+        return (
+          <MarkdownGallery
+            className={className}
+            {...props}
+          >
+            {children}
+          </MarkdownGallery>
+        )
+      }
+
+      return (
+        <div className={className} {...props}>
+          {children}
+        </div>
+      )
+    },
+    details: MarkdownDetails,
+    summary: MarkdownSummary,
+
     // Checkbox related [x] or [ ]
     input: ({ children, ...props }) => (
       <label className="relative inline-flex items-center text-center">
@@ -161,30 +230,99 @@ const createMarkdownComponents = (translation: Translation, autoSlug: boolean = 
         </span>
       </label>
     ),
+    span: ({ className = '', children, node: _node, ...props }) => {
+      const isSpoiler = className.split(/\s+/).includes('discourse-spoiler')
+
+      if (isSpoiler) {
+        return (
+          <SpoilerText className={className} {...props}>
+            {children}
+          </SpoilerText>
+        )
+      }
+
+      return (
+        <span className={className} {...props}>
+          {children}
+        </span>
+      )
+    },
 
     // List related
-    ul: ({ children }) => (
-      <div className="my-4 rounded-lg border-2 border-dashed border-primary-300 dark:border-primary-200 p-3">
-        <ul className="ml-2 list-disc list-inside">
+    ul: ({ children, className = '', ...props }) => {
+      const isTaskList = hasToken(className, 'contains-task-list')
+
+      return (
+        <ul
+          {...props}
+          className={
+            isTaskList
+              ? `markdown-task-list my-4 space-y-2 ${className}`
+              : `markdown-unordered-list space-y-1.5 ${className}`
+          }
+        >
           {children}
         </ul>
-      </div>
-    ),
-    ol: ({ children }) => (
-      <div className="my-4 rounded-lg border-2 border-dashed border-secondary-400 dark:border-secondary-300 p-3">
-        <ol className="ml-2 list-decimal list-inside">
-          {children}
-        </ol>
-      </div>
-    ),
-    li: ({ children }) => (
-      <li className="leading-relaxed marker:text-primary-400 dark:marker:text-primary-300 marker:font-medium list-outside pl-1 ml-2">
+      )
+    },
+    ol: ({ children, className = '', ...props }) => (
+      <ol
+        {...props}
+        className={`markdown-ordered-list space-y-1.5 ${className}`}
+      >
         {children}
-      </li>
+      </ol>
     ),
+    li: ({ children, className = '', ...props }) => {
+      const isTaskItem = hasToken(className, 'task-list-item')
+
+      return (
+        <li
+          {...props}
+          className={
+            isTaskItem
+              ? `markdown-task-item leading-relaxed ${className}`
+              : `markdown-list-item ${className}`
+          }
+        >
+          {children}
+        </li>
+      )
+    },
 
     // Link related
-    a: ({ href = '#', children, ...props }: { href?: string, children?: ReactNode }) => {
+    a: ({
+      href = '#',
+      children,
+      className,
+      node: _node,
+      ...props
+    }: MarkdownAnchorProps) => {
+      const isFootnoteRef = props['data-footnote-ref'] != null
+      const isFootnoteBackref = props['data-footnote-backref'] != null
+
+      if (isFootnoteRef) {
+        return (
+          <MarkdownFootnoteReference
+            href={href}
+            className={className}
+            {...props}
+          >
+            {children}
+          </MarkdownFootnoteReference>
+        )
+      }
+
+      if (isFootnoteBackref) {
+        return (
+          <MarkdownFootnoteBackReference
+            href={href}
+            className={className}
+            {...props}
+          />
+        )
+      }
+
       const isInternalLink = typeof href === 'string' && (href.startsWith('/') || href.startsWith('#'))
       return (
         <a
@@ -196,8 +334,8 @@ const createMarkdownComponents = (translation: Translation, autoSlug: boolean = 
               ? undefined
               : `${translation.newTab}${children?.toString() ?? 'link'}`
           }
-          className="text-hover-primary underline-interactive mx-1 break-words font-semibold text-secondary decoration-[#5BCEFA] dark:decoration-[#81E6D9] hover:text-accent-700 dark:hover:text-accent-600"
-          {...(props as Record<string, unknown>)}
+          className={`text-hover-primary underline-interactive mx-1 break-words font-semibold text-secondary decoration-[#5BCEFA] dark:decoration-[#81E6D9] hover:text-accent-700 dark:hover:text-accent-600 ${className ?? ''}`}
+          {...(props)}
         >
           {children}
         </a>
@@ -205,17 +343,7 @@ const createMarkdownComponents = (translation: Translation, autoSlug: boolean = 
     },
 
     // Image related
-    img: ({ src: source = '', alt = 'Image', ...props }: { src?: string | Blob, alt?: string }) => (
-      <CustomImage
-        src={typeof source === 'string' ? source : ''}
-        alt={alt}
-        width={500}
-        height={700}
-        priority={false}
-        className="relative mx-auto my-6 h-auto max-h-[500px] w-auto min-w-[200px] max-w-full rounded-xs object-contain shadow-md lg:max-h-[700px] lg:min-w-[300px] xl:max-h-[800px] xl:min-w-[400px]"
-        {...(props as Record<string, unknown>)}
-      />
-    ),
+    img: MarkdownImage,
 
     // Code related
     code: ({ className, children, ...props }) => {
@@ -223,16 +351,15 @@ const createMarkdownComponents = (translation: Translation, autoSlug: boolean = 
       return match
         ? (
             <CodeBlock
-              match={match}
+              matchedLang={match[1]}
               translation={translation}
-            >
-              {children}
-            </CodeBlock>
+              children={children}
+            />
           )
         : (
             <code
               className="inline-block rounded-lg bg-primary-300/20 mx-1 px-0.5 font-mono text-base font-bold text-primary-400 dark:text-primary-200"
-              {...(props as Record<string, unknown>)}
+              {...(props)}
             >
               {children}
             </code>
@@ -246,9 +373,11 @@ const createMarkdownComponents = (translation: Translation, autoSlug: boolean = 
         && typeof (children.props as { className?: string }).className === 'string' && (children.props as { className?: string }).className !== null && (children.props as { className?: string }).className !== ''
         && (children.props as { className?: string }).className === 'language-Links'
       ) {
-        return renderFriendLinks(
-          (children.props as { children: string }).children,
-          translation,
+        return (
+          <FriendLinks
+            linksChildren={(children.props as { children?: string }).children ?? ''}
+            translation={translation}
+          />
         )
       }
 
@@ -260,7 +389,7 @@ const createMarkdownComponents = (translation: Translation, autoSlug: boolean = 
           : 'CODE'
 
       return (
-        <pre className="relative overflow-hidden rounded-lg bg-gray-700 pt-8 shadow-sm shadow-slate-950 transition-all-300 hover:shadow-md dark:shadow-slate-700">
+        <div className="relative overflow-hidden rounded-lg bg-gray-700 pt-8 shadow-sm shadow-slate-950 transition-all-300 hover:shadow-md dark:shadow-slate-700">
           {/* MacOS window buttons */}
           <div className="absolute left-3 top-2 flex space-x-2" aria-hidden="true">
             <span className="h-3 w-3 rounded-full bg-red-500 transition-all-300 hover:ring-1 hover:ring-white hover:scale-105" />
@@ -274,7 +403,7 @@ const createMarkdownComponents = (translation: Translation, autoSlug: boolean = 
           </div>
 
           {children}
-        </pre>
+        </div>
       )
     },
     kbd: ({ children }) => {
@@ -289,8 +418,8 @@ const createMarkdownComponents = (translation: Translation, autoSlug: boolean = 
 
     // Table related
     table: ({ children }) => (
-      <div className="my-6 w-full rounded-lg border border-gray-300 shadow-md overflow-hidden">
-        <table className="w-full rounded-lg border text-left overflow-hidden">
+      <div className="my-6 w-full rounded-lg border border-gray-300 shadow-md overflow-y-auto">
+        <table className="w-full rounded-lg border text-left overflow-y-auto">
           {children}
         </table>
       </div>
@@ -335,6 +464,40 @@ const createMarkdownComponents = (translation: Translation, autoSlug: boolean = 
     br: () => (
       <br className="flex justify-center my-4" />
     ),
+    section: ({
+      children,
+      className,
+      node: _node,
+      ...props
+    }: MarkdownSectionProps) => {
+      const isFootnotes = props['data-footnotes'] != null || hasToken(className, 'footnotes')
+
+      if (!isFootnotes) {
+        return (
+          <section className={className} {...props}>
+            {children}
+          </section>
+        )
+      }
+
+      return (
+        <section
+          className={`markdown-footnotes clear-both mt-12 border-t border-primary-300/30 pt-5 text-sm text-gray-700 dark:border-primary-200/25 dark:text-gray-200 ${className ?? ''}`}
+          aria-label="Footnotes"
+          {...props}
+        >
+          <div
+            className={[
+              '[&_li]:!my-2',
+              '[&_p]:!my-1',
+              '[&_p]:!leading-relaxed',
+            ].join(' ')}
+          >
+            {children}
+          </div>
+        </section>
+      )
+    },
   }
 }
 
