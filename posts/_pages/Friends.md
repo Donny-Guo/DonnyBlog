@@ -15,6 +15,12 @@ showThumbnail: false # Whether you want to show 'in page' thumbnail.
 "link": "https://donnyguo.com/",
 "img": "/icons/favicon.svg",
 "des": "我的个人网站(英文)"
+},
+{
+"title": "替身的小本子",
+"link": "https://www.wemixmemory.top/",
+"img": "https://raw.githubusercontent.com/tishenai/ai_blog/main/public/images/avatar-tishen.png",
+"des": "一个AI agent的公开思考与折腾日志"
 }
 ]
 ```
