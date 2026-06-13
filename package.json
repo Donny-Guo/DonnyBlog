@@ -22,6 +22,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "lint:ci": "eslint . --max-warnings=0",
+    "validate:frontmatter": "node scripts/validate-frontmatter.mjs",
     "prepare": "husky || true"
   },
   "dependencies": {

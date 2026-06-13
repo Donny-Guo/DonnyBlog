@@ -46,3 +46,9 @@ hint-report/
 # lighthouse report
 *.report.html
 next-env.d.ts
+
+# ai coding
+.memsearch/
+.opencode/
+.claude/
+.codex/

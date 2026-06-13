@@ -1,1 +1,29 @@
+#!/usr/bin/env sh
+set -e
+
+refs_file="$(mktemp)"
+trap 'rm -f "$refs_file"' EXIT
+cat > "$refs_file"
+
+pnpm run validate:frontmatter
+
+while read -r local_ref local_sha remote_ref remote_sha; do
+  if [ -z "$local_sha" ] || [ "$local_sha" = "0000000000000000000000000000000000000000" ]; then
+    continue
+  fi
+
+  if [ -n "$remote_sha" ] && [ "$remote_sha" != "0000000000000000000000000000000000000000" ]; then
+    pnpm run validate:frontmatter -- --range "$remote_sha..$local_sha"
+  else
+    commits="$(git rev-list --reverse "$local_sha" --not --remotes)"
+    if [ -n "$commits" ]; then
+      printf '%s\n' "$commits" | while read -r commit_sha; do
+        pnpm run validate:frontmatter -- --ref "$commit_sha"
+      done
+    else
+      pnpm run validate:frontmatter -- --ref "$local_sha"
+    fi
+  fi
+done < "$refs_file"
+
 pnpm run build

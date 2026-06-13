@@ -11,6 +11,56 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  frontmatter:
+    name: 📋 Frontmatter
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: read
+
+    steps:
+      - name: 📂 Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 🧰 Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          package_json_file: package.json
+
+      - name: 🧱 Setup Node (cache pnpm)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          cache: pnpm
+
+      - name: 📦 Install deps (frozen)
+        run: pnpm install --frozen-lockfile
+
+      - name: 📋 Validate frontmatter for each PR commit
+        env:
+          PR_COMMITS_URL: ${{ github.event.pull_request.commits_url }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          commits_url="$PR_COMMITS_URL?per_page=100"
+          : > pr-commits.txt
+          while [ -n "$commits_url" ]; do
+            response_headers="$(mktemp)"
+            curl --fail --silent --show-error \
+              --dump-header "$response_headers" \
+              --header "Authorization: Bearer $GH_TOKEN" \
+              --header "Accept: application/vnd.github+json" \
+              "$commits_url" \
+              | node -e "let input = ''; process.stdin.on('data', chunk => input += chunk); process.stdin.on('end', () => { for (const commit of JSON.parse(input)) console.log(commit.sha) })" \
+              >> pr-commits.txt
+            commits_url="$(node -e "const fs = require('fs'); const headers = fs.readFileSync(process.argv[1], 'utf8'); const link = headers.split(/\\r?\\n/).find(line => line.toLowerCase().startsWith('link:')) || ''; const next = link.split(',').find(part => part.includes('rel=\"next\"')); console.log(next ? next.match(/<([^>]+)>/)[1] : '')" "$response_headers")"
+            rm -f "$response_headers"
+          done
+
+          pnpm run validate:frontmatter -- --commits-file pr-commits.txt
+
   lint:
     name: 🚨 Lint
     runs-on: ubuntu-latest
@@ -70,7 +120,7 @@ jobs:
     name: 💬 Report
     runs-on: ubuntu-latest
     if: always()
-    needs: [lint, build]
+    needs: [frontmatter, lint, build]
     permissions:
       contents: read
       pull-requests: write
@@ -80,6 +130,7 @@ jobs:
       - name: 🧾 Write job summary
         shell: bash
         env:
+          FRONTMATTER_RESULT: ${{ needs.frontmatter.result }}
           LINT_RESULT: ${{ needs.lint.result }}
           BUILD_RESULT: ${{ needs.build.result }}
 
@@ -90,12 +141,14 @@ jobs:
 
           const icon = (o) => o === 'success' ? '✅' : o === 'failure' ? '❌' : '⏭️';
 
+          const frontmatter = process.env.FRONTMATTER_RESULT || 'skipped';
           const lint = process.env.LINT_RESULT || 'skipped';
           const build = process.env.BUILD_RESULT || 'skipped';
 
           const lines = [];
           lines.push('## 🧪 PR Checks');
           lines.push('');
+          lines.push(`- 📋 Frontmatter: ${icon(frontmatter)} **${frontmatter}**`);
           lines.push(`- 🚨 Lint: ${icon(lint)} **${lint}**`);
           lines.push(`- 🏗️ Build: ${icon(build)} **${build}**`);
           lines.push('');
@@ -107,6 +160,7 @@ jobs:
         continue-on-error: true
         uses: actions/github-script@v7
         env:
+          FRONTMATTER_RESULT: ${{ needs.frontmatter.result }}
           LINT_RESULT: ${{ needs.lint.result }}
           BUILD_RESULT: ${{ needs.build.result }}
         with:
@@ -116,6 +170,7 @@ jobs:
 
             const icon = (o) => (o === "success" ? "✅" : o === "failure" ? "❌" : "⏭️");
 
+            const frontmatter = process.env.FRONTMATTER_RESULT || "skipped";
             const lint = process.env.LINT_RESULT || "skipped";
             const build = process.env.BUILD_RESULT || "skipped";
 
@@ -123,6 +178,7 @@ jobs:
               marker,
               "### 🧪 SuzuBlog PR Checks",
               "",
+              `- 📋 Frontmatter: ${icon(frontmatter)} **${frontmatter}**`,
               `- 🚨 Lint: ${icon(lint)} **${lint}**`,
               `- 🏗️ Build: ${icon(build)} **${build}**`,
               "",
@@ -156,10 +212,12 @@ jobs:
       - name: ❌ Fail workflow if any required check failed
         shell: bash
         env:
+          FRONTMATTER_RESULT: ${{ needs.frontmatter.result }}
           LINT_RESULT: ${{ needs.lint.result }}
           BUILD_RESULT: ${{ needs.build.result }}
         run: |
-          if [ "$LINT_RESULT" != "success" ] || \
+          if [ "$FRONTMATTER_RESULT" != "success" ] || \
+             [ "$LINT_RESULT" != "success" ] || \
              [ "$BUILD_RESULT" != "success" ]; then
             echo "One or more required PR checks failed."
             exit 1

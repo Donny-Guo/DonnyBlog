@@ -1,0 +1,52 @@
+name: 📋 Frontmatter Check
+
+on: [push, pull_request]
+
+concurrency:
+  group: frontmatter-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: 🔍 Validate Post Frontmatter
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+
+    steps:
+      - name: 📂 Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 🧰 Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          package_json_file: package.json
+
+      - name: 🧱 Setup Node (cache pnpm)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          cache: pnpm
+
+      - name: 📦 Install deps (frozen)
+        run: pnpm install --frozen-lockfile
+
+      - name: 📋 Validate frontmatter for each commit
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          HEAD_SHA: ${{ github.sha }}
+          PUSH_BEFORE: ${{ github.event.before }}
+          PUSH_AFTER: ${{ github.event.after }}
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            pnpm run validate:frontmatter -- --range "$PR_BASE_SHA..$PR_HEAD_SHA"
+          elif [ -n "$PUSH_BEFORE" ] && [ "$PUSH_BEFORE" != "0000000000000000000000000000000000000000" ]; then
+            pnpm run validate:frontmatter -- --range "$PUSH_BEFORE..$PUSH_AFTER"
+          else
+            pnpm run validate:frontmatter -- --ref "$HEAD_SHA"
+          fi
