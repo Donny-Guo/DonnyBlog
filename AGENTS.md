@@ -52,6 +52,7 @@ Agents should follow `CONTRIBUTING.md` unless the user explicitly asks for a dif
 - Inspect available scripts before choosing commands.
 - Run the most relevant validation for the files changed.
 - Use `pnpm lint:fix` for automatic formatting and linting fixes.
+- Run `node scripts/validate-frontmatter.mjs` to validate post frontmatter.
 - Use `pnpm run build` for code, route, config schema, content pipeline, or generated-output changes.
 - There is currently no `pnpm test` script nor test framework right now.
 - If validation fails, report the command, the failure, and whether it appears related to the current change.

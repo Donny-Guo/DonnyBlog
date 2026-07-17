@@ -48,6 +48,7 @@ pnpm start
 - `pnpm start`: start the production Next.js server after a build.
 - `pnpm lint`: run ESLint.
 - `pnpm lint:fix`: run ESLint with automatic fixes.
+- `node scripts/validate-frontmatter.mjs`: validate frontmatter of all posts in `posts/`.
 
 There is no test script configured at the moment. Prefer `pnpm lint` or `pnpm run build` for documentation-adjacent changes, and add focused tests if a future change introduces test infrastructure.
 
