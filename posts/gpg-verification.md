@@ -14,7 +14,7 @@ When downloading binaries or source archives from open source projects, the comm
 
 For security-focused users and developers, verification should be a pipeline: moving from **Integrity** (Has the file changed?) to **Authenticity** (Who signed this?).
 
-## 1. The Baseline: Integrity via Checksums
+## The Baseline: Integrity via Checksums
 
 Checksums (hashes) are the first line of defense. They detect accidental corruption or naive tampering.
 
@@ -40,7 +40,7 @@ If an attacker compromises the download server, they can replace both the binary
 
 ---
 
-## 2. The Gold Standard: Authenticity via GPG
+## The Gold Standard: Authenticity via GPG
 
 A GPG signature proves that the holder of a specific private key signed the file. Even if the server is compromised, the attacker cannot forge a signature without the private key.
 
@@ -86,7 +86,7 @@ A "Good signature" only means that the file was signed by the private key corres
 
 ---
 
-## 3. The Trust Gap: Finding the Key
+## The Trust Gap: Finding the Key
 
 The hardest part of PGP is "Out-of-Band" verification. To be truly secure, you should verify the key's fingerprint.
 
@@ -101,7 +101,7 @@ If the fingerprints match, the key is authentic.
 
 ---
 
-## 4. Real-World Examples
+## Real-World Examples
 
 ### Example 1: LibreWolf (bsys6)
 
